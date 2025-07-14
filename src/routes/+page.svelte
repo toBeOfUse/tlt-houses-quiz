@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../app.css';
 	const items = [
 		{
 			name: 'A SACK OF OLD OSSICLES',
@@ -160,7 +161,14 @@
 				'4': 5
 			}
 		}
-	];
+	].map((item) => ({
+		...item,
+		description: item.description
+			.split('\n')
+			.map((p) => `<p>${p}</p>`)
+			.join('\n')
+	}));
+	let chosenItems: number[] = $state([]);
 </script>
 
 <svelte:head>
@@ -169,18 +177,70 @@
 </svelte:head>
 
 <section>
-	{#each items as item}
-		<h3>{item.name}</h3>
-		{@html item.description
-			.split('\n')
-			.map((p) => `<p>${p}</p>`)
-			.join('\n')}
-	{/each}
+	<div style="display: flex">
+		<div style="display: flex; flex-direction: column; padding: 16px">
+			<h1>Nine Houses Quiz</h1>
+			<p>Select Your Items ({chosenItems.length}/5 selected)</p>
+			<div style="display: flex; gap: 8px; flex-wrap: wrap;">
+				{#each items as item, i (item.name)}
+					<button
+						class={['item-card', { 'selected-item-card': chosenItems.includes(i) }]}
+						onclick={() => {
+							console.log(i, $state.snapshot(chosenItems));
+							if (!chosenItems.includes(i)) {
+								if (chosenItems.length < 5) chosenItems.push(i);
+							} else {
+								chosenItems = chosenItems.filter((item) => item !== i);
+							}
+						}}
+					>
+						<h3>{item.name}</h3>
+						{#if chosenItems.includes(i)}
+							<span style="position: absolute; top: 4px; right: 4px">✔️</span>
+						{/if}
+					</button>
+				{/each}
+			</div>
+		</div>
+		<img
+			style="height: 100vh; width: auto; top: 0; position: sticky"
+			src="https://64.media.tumblr.com/ebb963902e6c9d33e1a41c9daac9af51/5e808fe65e90fb85-f5/s400x600/47a7634f670867eb539bf011833a804af2aa3eec.pnj"
+		/>
+	</div>
 </section>
 
 <style>
 	:global(body) {
 		background-color: rgb(83, 42, 94);
+		color: white;
+		font-family: sans-serif;
+	}
+	:global(p) {
+		margin: 6px 0;
+	}
+	:global(h3) {
+		margin: 10px 0;
+	}
+
+	h1 {
+		margin: 14px 0;
+	}
+
+	.item-card {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: #fff2;
+		border-radius: 8px;
+		text-align: center;
+		padding: 8px;
+		width: 350px;
+		height: 125px;
+		position: relative;
+		color: #fffa;
+	}
+
+	.selected-item-card {
 		color: white;
 	}
 </style>
