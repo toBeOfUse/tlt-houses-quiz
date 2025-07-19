@@ -171,9 +171,9 @@
 				</p>
 				<p>
 					Luckily, on this magical survival journey you have the opportunity to pick items to help
-					you. You may salvage <strong>five</strong> items of the fifteen I am about to list under the
-					cut. These items will be the key to who you are, secretly, on the inside. You're probably going
-					to die, but at least you will know who you are, which has to be some kind of comfort, right
+					you. You may salvage <strong>five</strong> items of the fifteen I am about to list below. These
+					items will be the key to who you are, secretly, on the inside. You're probably going to die,
+					but at least you will know who you are, which has to be some kind of comfort, right
 				</p>
 				<p>
 					These items will score you points with one or more Houses. Once you have made your
