@@ -95,75 +95,167 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Nine Houses Quiz</title>
 </svelte:head>
 
 <section>
 	<div style="display: flex">
-		<div style="display: flex; flex-direction: column; padding: 16px">
+		<div id="main-content">
+			<img class="flourish" src="end-flourish.svg" style="margin: 20px 0 5px" />
 			<h1>Nine Houses Quiz</h1>
-			<p>Select Your Items ({chosenItems.length}/5 selected)</p>
-			<div style="display: flex; gap: 8px; flex-wrap: wrap;">
-				{#each items as item, i (item.name)}
-					<button
-						class={['item-card', { 'selected-item-card': chosenItems.includes(i) }]}
-						onclick={() => {
-							console.log(i, $state.snapshot(chosenItems));
-							if (!chosenItems.includes(i)) {
-								if (chosenItems.length < 5) chosenItems.push(i);
-							} else {
-								chosenItems = chosenItems.filter((item) => item !== i);
-							}
-						}}
-					>
-						<h3>{item.name}</h3>
-						{#if chosenItems.includes(i)}
-							<span style="position: absolute; top: 4px; right: 4px">✔️</span>
-						{/if}
-					</button>
-				{/each}
+			<p>
+				You and a couple of your friends, if you have any, are on a boat in the ocean. Why are you
+				here? Is this even relevant in the universe? Who cares. This ocean's purpose is to help you
+				pick... your true House identity.
+			</p>
+			<p>
+				Luckily, on this magical survival journey you have the opportunity to pick items to help
+				you. You may salvage <strong>five</strong> items of the fifteen I am about to list under the
+				cut. These items will be the key to who you are, secretly, on the inside. You're probably going
+				to die, but at least you will know who you are, which has to be some kind of comfort, right
+			</p>
+			<p>
+				These items will score you points with one or more Houses. Once you have made your
+				selection, we'll tally your points, and you will discover... Yourself!!!!
+			</p>
+			<div>
+				<h3 style="font-size: 125%; margin: 16px 0">
+					Select Your Items ({chosenItems.length}/5 selected)
+				</h3>
+				<div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center">
+					{#each items as item, i (item.name)}
+						<button
+							class={['item-card', { 'selected-item-card': chosenItems.includes(i) }]}
+							disabled={chosenItems.length === 5 && !chosenItems.includes(i)}
+							onclick={() => {
+								console.log(i, $state.snapshot(chosenItems));
+								if (!chosenItems.includes(i)) {
+									if (chosenItems.length < 5) chosenItems.push(i);
+								} else {
+									chosenItems = chosenItems.filter((item) => item !== i);
+								}
+							}}
+						>
+							{item.name}
+						</button>
+					{/each}
+				</div>
 			</div>
+			<button
+				disabled={chosenItems.length < 5}
+				style="align-self: flex-start; width: 100%; margin-top: 32px;
+						font-size: 1.5em; padding: 8px; background-color: black">go out to sea</button
+			>
+			<img
+				class="flourish"
+				src="end-flourish.svg"
+				style="transform: scaleY(-100%); margin: 40px 0 20px;"
+			/>
+			<footer style="text-center; font-size: 75%">
+				Based on <a
+					href="https://tazmuir.tumblr.com/post/188233732278/get-ready-for"
+					target="_blank">the quiz</a
+				> by Tamsyn Muir
+			</footer>
 		</div>
 		<img
-			style="height: 100vh; width: auto; top: 0; position: sticky"
+			class="desktop-only"
+			style="height: 100vh; width: auto; top: 0; right: 0; position: sticky"
 			src="https://64.media.tumblr.com/ebb963902e6c9d33e1a41c9daac9af51/5e808fe65e90fb85-f5/s400x600/47a7634f670867eb539bf011833a804af2aa3eec.pnj"
 		/>
 	</div>
 </section>
 
-<style>
-	:global(body) {
-		background-color: rgb(83, 42, 94);
-		color: white;
-		font-family: sans-serif;
-	}
-	:global(p) {
-		margin: 6px 0;
-	}
-	:global(h3) {
-		margin: 10px 0;
+<style lang="scss">
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+
+		to {
+			opacity: 1;
+		}
 	}
 
-	h1 {
-		margin: 14px 0;
+	$desktop-breakpoint: 1150px;
+
+	@media (max-width: $desktop-breakpoint) {
+		.desktop-only {
+			display: none;
+		}
+	}
+
+	#main-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 75ch;
+		margin: 0 auto;
+		max-width: 100%;
+		text-align: justify;
+		padding: 16px 12px;
+	}
+
+	#main-content > * {
+		animation: fade-in 1s ease-in;
+		animation-fill-mode: both;
+
+		@for $i from 1 through 10 {
+			&:nth-child(#{$i}) {
+				animation-delay: 150ms * $i;
+			}
+		}
 	}
 
 	.item-card {
+		color: inherit;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: #fff2;
+		background-color: transparent;
 		border-radius: 8px;
 		text-align: center;
-		padding: 8px;
-		width: 350px;
-		height: 125px;
+		padding: 10px 40px;
+		height: 80px;
 		position: relative;
-		color: #fffa;
+		transition:
+			color 100ms linear,
+			background-color 100ms linear;
+		/* 9px is half the gap between items in the container that contains these */
+		width: calc(50% - 9px);
+		@media (max-width: 650px) {
+			width: 100%;
+		}
+	}
+
+	.flourish {
+		width: 400px;
+		max-width: 70vw;
+		filter: invert(100%);
+	}
+
+	button {
+		color: white;
+		&:disabled {
+			color: #fff8;
+		}
 	}
 
 	.selected-item-card {
-		color: white;
+		background-color: #0005;
+		color: #fffd;
+	}
+
+	.selected-item-card::after {
+		position: absolute;
+		left: 15px;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 10px;
+		height: 10px;
+		border-radius: 10px;
+		background-color: #fffd;
+		filter: blur(0.5px);
+		content: '';
 	}
 </style>
