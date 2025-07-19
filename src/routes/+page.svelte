@@ -108,7 +108,17 @@
 	let choicesSubmitted = $state(false);
 	// let choicesSubmitted = $state(true);
 
+	function handlePopState(e: PopStateEvent) {
+		if ('chosenItems' in e.state) {
+			chosenItems = e.state.chosenItems;
+			choicesSubmitted = true;
+		} else {
+			choicesSubmitted = false;
+			chosenItems = [];
+		}
+	}
 	const submitChoices = () => {
+		window.history.pushState({ chosenItems: $state.snapshot(chosenItems) }, '', '/results');
 		choicesSubmitted = true;
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
@@ -145,6 +155,8 @@
 		type: 'conjunction'
 	});
 </script>
+
+<svelte:window onpopstate={handlePopState} />
 
 <svelte:head>
 	<title>Nine Houses Quiz</title>
@@ -187,7 +199,6 @@
 								class={['item-card', { 'selected-item-card': chosenItems.includes(i) }]}
 								disabled={chosenItems.length === 5 && !chosenItems.includes(i)}
 								onclick={() => {
-									console.log(i, $state.snapshot(chosenItems));
 									if (!chosenItems.includes(i)) {
 										if (chosenItems.length < 5) chosenItems.push(i);
 									} else {
