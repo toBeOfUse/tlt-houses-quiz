@@ -91,65 +91,181 @@
 			housePoints: { '4': 5 }
 		}
 	];
+	const ordinalNumbers = [
+		'First',
+		'Second',
+		'Third',
+		'Fourth',
+		'Fifth',
+		'Sixth',
+		'Seventh',
+		'Eighth',
+		'Ninth'
+	];
 	let chosenItems: number[] = $state([]);
+	// let chosenItems: number[] = $state([0, 2]);
+
+	let choicesSubmitted = $state(false);
+	// let choicesSubmitted = $state(true);
+
+	const submitChoices = () => {
+		choicesSubmitted = true;
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+
+	const calculatedScore = $derived(
+		chosenItems.reduce(
+			(acc, itemNumber) => {
+				const chosenItem = items[itemNumber];
+				for (const [house, points] of Object.entries(chosenItem.housePoints) as [
+					keyof (typeof chosenItem)['housePoints'],
+					number
+				][]) {
+					const houseIndex = Number(house) - 1;
+					acc[houseIndex] = acc[houseIndex] + points;
+				}
+				return acc;
+			},
+			Array(9).fill(0) as number[]
+		)
+	);
+	/**
+	 * has the indexes of the house(s) with which the quiz-taker got the highest score
+	 */
+	const houseResults = $derived.by(() => {
+		const highestScore = Math.max(...calculatedScore);
+		return calculatedScore.reduce(
+			(acc, val, i) => (val === highestScore ? [...acc, i] : acc),
+			[] as number[]
+		);
+	});
+
+	const andFormatter = new Intl.ListFormat('en', {
+		style: 'long',
+		type: 'conjunction'
+	});
 </script>
 
 <svelte:head>
 	<title>Nine Houses Quiz</title>
+	{#each Array(9) as _, i}
+		<link rel="preload" as="image" href={`/houses/${i + 1}.svg`} />
+	{/each}
 </svelte:head>
 
 <section>
 	<div style="display: flex">
 		<div id="main-content">
 			<img class="flourish" src="end-flourish.svg" style="margin: 20px 0 5px" />
-			<h1>Nine Houses Quiz</h1>
-			<p>
-				You and a couple of your friends, if you have any, are on a boat in the ocean. Why are you
-				here? Is this even relevant in the universe? Who cares. This ocean's purpose is to help you
-				pick... your true House identity.
-			</p>
-			<p>
-				Luckily, on this magical survival journey you have the opportunity to pick items to help
-				you. You may salvage <strong>five</strong> items of the fifteen I am about to list under the
-				cut. These items will be the key to who you are, secretly, on the inside. You're probably going
-				to die, but at least you will know who you are, which has to be some kind of comfort, right
-			</p>
-			<p>
-				These items will score you points with one or more Houses. Once you have made your
-				selection, we'll tally your points, and you will discover... Yourself!!!!
-			</p>
-			<div>
-				<h3 style="font-size: 125%; margin: 16px 0">
-					Select Your Items ({chosenItems.length}/5 selected)
-				</h3>
-				<div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center">
-					{#each items as item, i (item.name)}
-						<button
-							class={['item-card', { 'selected-item-card': chosenItems.includes(i) }]}
-							disabled={chosenItems.length === 5 && !chosenItems.includes(i)}
-							onclick={() => {
-								console.log(i, $state.snapshot(chosenItems));
-								if (!chosenItems.includes(i)) {
-									if (chosenItems.length < 5) chosenItems.push(i);
-								} else {
-									chosenItems = chosenItems.filter((item) => item !== i);
-								}
-							}}
-						>
-							{item.name}
-						</button>
-					{/each}
+			{#if !choicesSubmitted}
+				<h1 style="text-align: center; margin-top: 12px; margin-bottom: 8px">
+					Tamsyn Muir's SEABOUND
+				</h1>
+				<h4 style="text-align: center; margin-bottom: 12px">
+					A Locked Tomb Universe Survival Adventure and House Identification Tool
+				</h4>
+				<p>
+					You and a couple of your friends, if you have any, are on a boat in the ocean. Why are you
+					here? Is this even relevant in the universe? Who cares. This ocean's purpose is to help
+					you pick... your true House identity.
+				</p>
+				<p>
+					Luckily, on this magical survival journey you have the opportunity to pick items to help
+					you. You may salvage <strong>five</strong> items of the fifteen I am about to list under the
+					cut. These items will be the key to who you are, secretly, on the inside. You're probably going
+					to die, but at least you will know who you are, which has to be some kind of comfort, right
+				</p>
+				<p>
+					These items will score you points with one or more Houses. Once you have made your
+					selection, we'll tally your points, and you will discover... Yourself!!!!
+				</p>
+				<div>
+					<h3>Select Five Items:</h3>
+					<div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center">
+						{#each items as item, i (item.name)}
+							<button
+								class={['item-card', { 'selected-item-card': chosenItems.includes(i) }]}
+								disabled={chosenItems.length === 5 && !chosenItems.includes(i)}
+								onclick={() => {
+									console.log(i, $state.snapshot(chosenItems));
+									if (!chosenItems.includes(i)) {
+										if (chosenItems.length < 5) chosenItems.push(i);
+									} else {
+										chosenItems = chosenItems.filter((item) => item !== i);
+									}
+								}}
+							>
+								{item.name}
+							</button>
+						{/each}
+					</div>
 				</div>
-			</div>
-			<button
-				disabled={chosenItems.length < 5}
-				style="align-self: flex-start; width: 100%; margin-top: 32px;
-						font-size: 1.5em; padding: 8px; background-color: black">go out to sea</button
-			>
+				<button
+					onclick={submitChoices}
+					disabled={chosenItems.length < 5}
+					style="align-self: flex-start; width: 100%; margin: 18px 0;
+						font-size: 1.5em; padding: 8px; background-color: black;"
+					>{chosenItems.length === 5
+						? 'go out to sea'
+						: `(${chosenItems.length}/5 items selected)`}</button
+				>
+			{:else}
+				<div style="margin-bottom: 5px; text-align: center">
+					<h1 style="margin: 16px 0">Your Results:</h1>
+					<div id="score-grid">
+						{#each calculatedScore as score, houseIndex}
+							<div
+								style="display: flex; flex-direction: column; align-items: center;
+									border-radius: 5px; padding: 8px 12px; background-color: transparent"
+								style:box-shadow={houseResults.includes(houseIndex) ? '0px 0px 8px #fffa' : ''}
+							>
+								<img
+									src={`/houses/${houseIndex + 1}.svg`}
+									style="height: 80px; filter: invert(100%)"
+								/>
+								<span
+									style:white-space="nowrap"
+									style:font-weight={houseResults.includes(houseIndex) ? 'bold' : ''}
+									>{score} points</span
+								>
+							</div>
+						{/each}
+					</div>
+					{#if houseResults.length === 1}
+						<h3>You belong to the <strong>{ordinalNumbers[houseResults[0]]} House.</strong></h3>
+					{:else}
+						<h3>
+							Your top houses are the {andFormatter.format(
+								houseResults.map((houseIndex) => ordinalNumbers[houseIndex])
+							)} Houses.
+						</h3>
+					{/if}
+				</div>
+				<div style="text-align: left">
+					<h2>Guide to your items:</h2>
+					<div style="display: flex; flex-direction: column; gap: 4px">
+						{#each chosenItems as itemIndex}
+							<div>
+								<h4 style="margin: 8px 0; font-size: 115%">{items[itemIndex].name}</h4>
+								{#each Object.entries(items[itemIndex].housePoints) as [house, points], pointsIndex}
+									<em
+										style="display:block; font-size: 90%"
+										style:margin={`3px 0 3px ${pointsIndex * 0.9}em`}
+									>
+										+{points}
+										{ordinalNumbers[Number(house) - 1]} House points
+									</em>
+								{/each}
+								{@html items[itemIndex].description}
+							</div>
+						{/each}
+					</div>
+				</div>
+			{/if}
 			<img
 				class="flourish"
 				src="end-flourish.svg"
-				style="transform: scaleY(-100%); margin: 40px 0 20px;"
+				style="transform: scaleY(-100%); margin: 10px 0 20px;"
 			/>
 			<footer style="text-center; font-size: 75%">
 				Based on <a
@@ -237,7 +353,7 @@
 	button {
 		color: white;
 		&:disabled {
-			color: #fff8;
+			color: #fff7;
 		}
 	}
 
@@ -257,5 +373,14 @@
 		background-color: #fffd;
 		filter: blur(0.5px);
 		content: '';
+	}
+
+	#score-grid {
+		display: grid;
+		grid-template-columns: repeat(9, 1fr);
+		@media (max-width: $desktop-breakpoint) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+		gap: 4px;
 	}
 </style>
