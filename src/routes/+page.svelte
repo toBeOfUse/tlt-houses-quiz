@@ -378,9 +378,9 @@
 	#score-grid {
 		display: grid;
 		grid-template-columns: repeat(9, 1fr);
+		gap: 4px;
 		@media (max-width: $desktop-breakpoint) {
 			grid-template-columns: repeat(3, 1fr);
 		}
-		gap: 4px;
 	}
 </style>
