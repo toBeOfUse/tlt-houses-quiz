@@ -1,6 +1,34 @@
 <script lang="ts">
+	function stab(
+		_node: HTMLElement,
+		{
+			delta,
+			finalWidth,
+			finalPos,
+			posRelativeTo,
+			delay = 0,
+			duration = 100
+		}: {
+			delta: number;
+			finalWidth: number;
+			finalPos: number;
+			posRelativeTo: 'left' | 'right';
+			delay?: number;
+			duration?: number;
+		}
+	) {
+		return {
+			delay,
+			duration,
+			css: (t: number) => `
+				width: ${finalWidth + delta - t * delta}px;
+				${posRelativeTo}: ${finalPos - delta + t * delta}px;
+				opacity: ${t};
+			`
+		};
+	}
+
 	import '../app.css';
-	import { fade } from 'svelte/transition';
 	import { items, ordinalNumbers } from './data';
 
 	let chosenItems: number[] = $state([]);
@@ -129,17 +157,27 @@
 							{#if chosen}
 								<img
 									alt=""
-									transition:fade={{ duration: 100 }}
+									transition:stab={{
+										delta: 30,
+										finalWidth: 65,
+										finalPos: -50,
+										posRelativeTo: 'left'
+									}}
 									src="/rapier.png"
-									style="
+									style="filter: brightness(0.8) contrast(2);
 										position: absolute; left: -50px; top: 50%; transform: translateY(-50%);
 										width: 65px; height: 75px; object-fit: cover; object-position: left 50%"
 								/>
 								<img
 									alt=""
-									transition:fade={{ duration: 100 }}
+									transition:stab={{
+										delta: -30,
+										finalWidth: 35,
+										finalPos: -30,
+										posRelativeTo: 'right'
+									}}
 									src="/rapier.png"
-									style="
+									style="filter: brightness(0.8) contrast(2);
 										position: absolute; right: -30px; top: 50%; transform: translateY(-50%);
 										width: 35px; height: 75px; object-fit: cover; object-position: right 50%"
 								/>
