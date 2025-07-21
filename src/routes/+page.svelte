@@ -153,32 +153,40 @@
 						>
 							{item.name}
 							{#if chosen}
-								<img
-									alt=""
-									transition:stab={{
-										delta: 30,
-										finalWidth: 65,
-										finalPos: -50,
-										posRelativeTo: 'left'
-									}}
-									src="/rapier.png"
-									style="filter: brightness(0.8) contrast(2);
+								{@const stabDelta = 30}
+								{@const rotateJitterRange = 8}
+								{@const rotateJitter = Math.random() * rotateJitterRange - 1}
+								<div
+									style:transform={`rotate(${rotateJitter}deg)`}
+									style="position: absolute; left: 0; top: 0; width: 100%; height: 100%"
+								>
+									<img
+										alt=""
+										transition:stab={{
+											delta: stabDelta,
+											finalWidth: 60,
+											finalPos: -50,
+											posRelativeTo: 'left'
+										}}
+										src="/rapier.png"
+										style="filter: brightness(0.8) contrast(2);
 										position: absolute; left: -50px; top: 50%; transform: translateY(-50%);
-										width: 65px; height: 75px; object-fit: cover; object-position: left 50%"
-								/>
-								<img
-									alt=""
-									transition:stab={{
-										delta: -30,
-										finalWidth: 35,
-										finalPos: -30,
-										posRelativeTo: 'right'
-									}}
-									src="/rapier.png"
-									style="filter: brightness(0.8) contrast(2);
+										width: 60px; height: 75px; object-fit: cover; object-position: left 50%"
+									/>
+									<img
+										alt=""
+										transition:stab={{
+											delta: -stabDelta,
+											finalWidth: 40,
+											finalPos: -30,
+											posRelativeTo: 'right'
+										}}
+										src="/rapier.png"
+										style="filter: brightness(0.8) contrast(2);
 										position: absolute; right: -30px; top: 50%; transform: translateY(-50%);
-										width: 35px; height: 75px; object-fit: cover; object-position: right 50%"
-								/>
+										width: 40px; height: 75px; object-fit: cover; object-position: right 50%"
+									/>
+								</div>
 							{/if}
 						</button>
 					{/each}
@@ -315,9 +323,11 @@
 		}
 	}
 
+	$room-for-swords: 25px;
+
 	#intro-text-container {
 		@media (min-width: $item-columns-breakpoint) {
-			padding: 0px 35px;
+			padding: 0px $room-for-swords;
 		}
 	}
 
@@ -336,7 +346,7 @@
 
 	#heading-skeleton {
 		height: 175px;
-		opacity: 0.6;
+		opacity: 0.9;
 		z-index: -1;
 		transform: rotate(-8deg);
 	}
@@ -361,7 +371,7 @@
 
 	.submit-button {
 		width: 100%;
-		margin: 28px 0;
+		margin: 28px $room-for-swords;
 		font-size: 1.5em;
 		padding: 8px;
 		background-color: black;
@@ -384,8 +394,8 @@
 		height: 85px;
 		position: relative;
 		transition: color 100ms linear;
-		width: calc(50% - 70px);
-		margin: 10px 35px;
+		width: calc(50% - $room-for-swords * 2);
+		margin: 10px $room-for-swords;
 		@media (max-width: $item-columns-breakpoint) {
 			width: 100%;
 		}
@@ -393,7 +403,7 @@
 
 	.flourish {
 		width: 400px;
-		max-width: 70vw;
+		max-width: 85vw;
 		filter: invert(100%);
 	}
 
