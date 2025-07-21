@@ -100,14 +100,12 @@
 		<div id="main-content">
 			{#if !choicesSubmitted}
 				<div id="intro-text-container">
-					<div
-						style="display: flex; flex-direction: row-reverse; justify-content:center; align-items: center; gap: 4px; padding: 0 4px; position: relative"
-					>
+					<div id="heading-container">
 						<img
 							class="desktop-none"
 							width="175"
 							height="175"
-							style="height: 175px; transform: rotate(-8deg) scale(1.1); opacity: 0.6; z-index: -1"
+							id="heading-skeleton"
 							src="/shh-its-a-test-transparent-smaller.png"
 							alt="A shitty clip-art skeleton says, 'Get your pencils. Shh. It's a test!'"
 						/>
@@ -281,7 +279,7 @@
 	}
 
 	$desktop-breakpoint: 1150px;
-	$column-count-breakpoint: 650px;
+	$item-columns-breakpoint: 650px;
 
 	@media (max-width: $desktop-breakpoint) {
 		.desktop-only {
@@ -318,9 +316,29 @@
 	}
 
 	#intro-text-container {
-		@media (min-width: $column-count-breakpoint) {
+		@media (min-width: $item-columns-breakpoint) {
 			padding: 0px 35px;
 		}
+	}
+
+	#heading-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 4px;
+		padding: 0 4px;
+		position: relative;
+		flex-direction: row-reverse;
+		@media (min-width: $item-columns-breakpoint) {
+			flex-direction: row;
+		}
+	}
+
+	#heading-skeleton {
+		height: 175px;
+		opacity: 0.6;
+		z-index: -1;
+		transform: rotate(-8deg);
 	}
 
 	#items-container {
@@ -363,12 +381,12 @@
 		border-radius: 8px;
 		text-align: center;
 		padding: 0 16px;
-		height: 90px;
+		height: 85px;
 		position: relative;
 		transition: color 100ms linear;
 		width: calc(50% - 70px);
 		margin: 10px 35px;
-		@media (max-width: $column-count-breakpoint) {
+		@media (max-width: $item-columns-breakpoint) {
 			width: 100%;
 		}
 	}
