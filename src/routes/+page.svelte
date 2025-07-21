@@ -47,6 +47,12 @@
 		}
 	}
 	const submitChoices = () => {
+		if (!window.location.host.startsWith('localhost:'))
+			(window as any).umami.track('quiz_complete', {
+				chosenItems: $state.snapshot(chosenItems),
+				calculatedScore: $state.snapshot(calculatedScore),
+				houseResults: $state.snapshot(houseResults)
+			});
 		window.history.pushState({ chosenItems: $state.snapshot(chosenItems) }, '', '/results');
 		choicesSubmitted = true;
 		window.scrollTo({ top: 0, behavior: 'smooth' });
