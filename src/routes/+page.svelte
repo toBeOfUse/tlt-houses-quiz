@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import { fade } from 'svelte/transition';
 	const items = [
 		{
 			name: 'A sack of old ossicles',
@@ -163,59 +164,90 @@
 	{#each Array(9) as _, i}
 		<link rel="preload" as="image" href={`/houses/${i + 1}.svg`} />
 	{/each}
+	<link rel="preload" as="image" href="/rapier.png" />
 </svelte:head>
 
 <section>
 	<div style="display: flex">
 		<div id="main-content">
-			<img class="flourish" src="end-flourish.svg" style="margin: 20px 0 5px" />
 			{#if !choicesSubmitted}
-				<h1 style="text-align: center; margin-top: 12px; margin-bottom: 8px">
-					Tamsyn Muir's SEABOUND
-				</h1>
-				<h4 style="text-align: center; margin-bottom: 12px">
-					A Locked Tomb Universe Survival Adventure and House Identification Tool
-				</h4>
-				<p>
-					You and a couple of your friends, if you have any, are on a boat in the ocean. Why are you
-					here? Is this even relevant in the universe? Who cares. This ocean's purpose is to help
-					you pick... your true House identity.
-				</p>
-				<p>
-					Luckily, on this magical survival journey you have the opportunity to pick items to help
-					you. You may salvage <strong>five</strong> items of the fifteen I am about to list below. These
-					items will be the key to who you are, secretly, on the inside. You're probably going to die,
-					but at least you will know who you are, which has to be some kind of comfort, right
-				</p>
-				<p>
-					These items will score you points with one or more Houses. Once you have made your
-					selection, we'll tally your points, and you will discover... Yourself!!!!
-				</p>
-				<div>
-					<h3>Select Five Items:</h3>
-					<div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center">
-						{#each items as item, i (item.name)}
-							<button
-								class={['item-card', { 'selected-item-card': chosenItems.includes(i) }]}
-								disabled={chosenItems.length === 5 && !chosenItems.includes(i)}
-								onclick={() => {
-									if (!chosenItems.includes(i)) {
-										if (chosenItems.length < 5) chosenItems.push(i);
-									} else {
-										chosenItems = chosenItems.filter((item) => item !== i);
-									}
-								}}
-							>
-								{item.name}
-							</button>
-						{/each}
+				<div id="intro-text-container">
+					<div
+						style="display: flex; flex-direction: row-reverse; justify-content:center; align-items: center; gap: 4px; padding: 0 4px; position: relative"
+					>
+						<img
+							class="desktop-none"
+							width="175"
+							height="175"
+							style="height: 175px; transform: rotate(-8deg) scale(1.1); opacity: 0.6; z-index: -1"
+							src="/shh-its-a-test-transparent-smaller.png"
+							alt="A shitty clip-art skeleton says, 'Get your pencils. Shh. It's a test!'"
+						/>
+						<div>
+							<h1 style="text-align: center; margin-top: 32px; margin-bottom: 8px">
+								Tamsyn Muir's SEABOUND
+							</h1>
+							<h4 style="text-align: center; margin-bottom: 24px">
+								A Locked Tomb Universe Survival Adventure and House Identification Tool
+							</h4>
+						</div>
 					</div>
+					<p>
+						You and a couple of your friends, if you have any, are on a boat in the ocean. Why are
+						you here? Is this even relevant in the universe? Who cares. This ocean's purpose is to
+						help you pick... your true House identity.
+					</p>
+					<p>
+						Luckily, on this magical survival journey you have the opportunity to pick items to help
+						you. You may salvage <strong>five</strong> items of the fifteen I am about to list below.
+						These items will be the key to who you are, secretly, on the inside. You're probably going
+						to die, but at least you will know who you are, which has to be some kind of comfort, right
+					</p>
+					<p>
+						These items will score you points with one or more Houses. Once you have made your
+						selection, we'll tally your points, and you will discover... Yourself!!!!
+					</p>
+					<h3>Choose Five Items:</h3>
 				</div>
-				<button
-					onclick={submitChoices}
-					disabled={chosenItems.length < 5}
-					style="align-self: flex-start; width: 100%; margin: 18px 0;
-						font-size: 1.5em; padding: 8px; background-color: black;"
+				<div id="items-container">
+					{#each items as item, i (item.name)}
+						{@const chosen = chosenItems.includes(i)}
+						<button
+							class="item-card"
+							role="checkbox"
+							aria-checked={chosen}
+							disabled={chosenItems.length === 5 && !chosen}
+							onclick={() => {
+								if (!chosen) {
+									if (chosenItems.length < 5) chosenItems.push(i);
+								} else {
+									chosenItems = chosenItems.filter((item) => item !== i);
+								}
+							}}
+						>
+							{item.name}
+							{#if chosen}
+								<img
+									alt=""
+									transition:fade={{ duration: 100 }}
+									src="/rapier.png"
+									style="
+										position: absolute; left: -50px; top: 50%; transform: translateY(-50%);
+										width: 65px; height: 75px; object-fit: cover; object-position: left 50%"
+								/>
+								<img
+									alt=""
+									transition:fade={{ duration: 100 }}
+									src="/rapier.png"
+									style="
+										position: absolute; right: -30px; top: 50%; transform: translateY(-50%);
+										width: 35px; height: 75px; object-fit: cover; object-position: right 50%"
+								/>
+							{/if}
+						</button>
+					{/each}
+				</div>
+				<button onclick={submitChoices} disabled={chosenItems.length < 5} class="submit-button"
 					>{chosenItems.length === 5
 						? 'go out to sea'
 						: `(${chosenItems.length}/5 items selected)`}</button
@@ -227,10 +259,11 @@
 						{#each calculatedScore as score, houseIndex}
 							<div
 								style="display: flex; flex-direction: column; align-items: center;
-									border-radius: 5px; padding: 8px 12px; background-color: transparent"
+									border-radius: 5px; padding: 8px 12px"
 								style:box-shadow={houseResults.includes(houseIndex) ? '0px 0px 8px #fffa' : ''}
 							>
 								<img
+									alt={ordinalNumbers[houseIndex] + ' house'}
 									src={`/houses/${houseIndex + 1}.svg`}
 									style="height: 80px; filter: invert(100%)"
 								/>
@@ -255,7 +288,7 @@
 				<div style="text-align: left">
 					<h2>Guide to your items:</h2>
 					<div style="display: flex; flex-direction: column; gap: 4px">
-						{#each chosenItems as itemIndex}
+						{#each chosenItems as itemIndex, i}
 							<div>
 								<h4 style="margin: 8px 0; font-size: 115%">{items[itemIndex].name}</h4>
 								{#each Object.entries(items[itemIndex].housePoints) as [house, points], pointsIndex}
@@ -269,6 +302,9 @@
 								{/each}
 								{@html items[itemIndex].description}
 							</div>
+							{#if i !== chosenItems.length - 1}<hr
+									style="margin: 12px 0; border-color: #fffa; border-width: 0.25px"
+								/>{/if}
 						{/each}
 					</div>
 				</div>
@@ -276,7 +312,8 @@
 			<img
 				class="flourish"
 				src="end-flourish.svg"
-				style="transform: scaleY(-100%); margin: 10px 0 20px;"
+				style="transform: scaleY(-100%); margin: 20px 0"
+				alt=""
 			/>
 			<footer style="text-center; font-size: 75%">
 				Based on <a
@@ -288,7 +325,8 @@
 		<img
 			class="desktop-only"
 			style="height: 100vh; width: auto; top: 0; right: 0; position: sticky"
-			src="https://64.media.tumblr.com/ebb963902e6c9d33e1a41c9daac9af51/5e808fe65e90fb85-f5/s400x600/47a7634f670867eb539bf011833a804af2aa3eec.pnj"
+			src="/shh-its-a-test-transparent.png"
+			alt="A shitty clip-art skeleton says, 'Get your pencils. Shh. It's a test!'"
 		/>
 	</div>
 </section>
@@ -305,9 +343,16 @@
 	}
 
 	$desktop-breakpoint: 1150px;
+	$column-count-breakpoint: 650px;
 
 	@media (max-width: $desktop-breakpoint) {
 		.desktop-only {
+			display: none;
+		}
+	}
+
+	@media (min-width: $desktop-breakpoint) {
+		.desktop-none {
 			display: none;
 		}
 	}
@@ -316,11 +361,11 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 75ch;
+		width: 85ch;
 		margin: 0 auto;
 		max-width: 100%;
 		text-align: justify;
-		padding: 16px 12px;
+		padding: 16px;
 	}
 
 	#main-content > * {
@@ -334,23 +379,58 @@
 		}
 	}
 
+	#intro-text-container {
+		@media (min-width: $column-count-breakpoint) {
+			padding: 0px 35px;
+		}
+	}
+
+	#items-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	button {
+		color: white;
+		border: 1px solid white;
+		&:disabled {
+			border: 1px solid #fffc;
+			color: #fff7;
+		}
+		&:active:not(:disabled) {
+			border: 1px solid #fffa;
+		}
+	}
+
+	.submit-button {
+		width: 100%;
+		margin: 28px 0;
+		font-size: 1.5em;
+		padding: 8px;
+		background-color: black;
+		box-shadow: 0px 0px 8px #fffa;
+		transition: box-shadow 100ms linear;
+		&:disabled {
+			box-shadow: 0px 0px 8px #fff7;
+		}
+	}
+
 	.item-card {
 		color: inherit;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: transparent;
+		background-color: #000a;
 		border-radius: 8px;
 		text-align: center;
-		padding: 10px 40px;
-		height: 80px;
+		padding: 0 16px;
+		height: 90px;
 		position: relative;
-		transition:
-			color 100ms linear,
-			background-color 100ms linear;
-		/* 9px is half the gap between items in the container that contains these */
-		width: calc(50% - 9px);
-		@media (max-width: 650px) {
+		transition: color 100ms linear;
+		width: calc(50% - 70px);
+		margin: 10px 35px;
+		@media (max-width: $column-count-breakpoint) {
 			width: 100%;
 		}
 	}
@@ -359,31 +439,6 @@
 		width: 400px;
 		max-width: 70vw;
 		filter: invert(100%);
-	}
-
-	button {
-		color: white;
-		&:disabled {
-			color: #fff7;
-		}
-	}
-
-	.selected-item-card {
-		background-color: #0005;
-		color: #fffd;
-	}
-
-	.selected-item-card::after {
-		position: absolute;
-		left: 15px;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 10px;
-		height: 10px;
-		border-radius: 10px;
-		background-color: #fffd;
-		filter: blur(0.5px);
-		content: '';
 	}
 
 	#score-grid {
