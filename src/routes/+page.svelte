@@ -101,7 +101,11 @@
 <svelte:window onpopstate={handlePopState} />
 
 <svelte:head>
-	<title>Nine Houses Quiz</title>
+	<title>TLT Nine Houses Quiz</title>
+	<meta name="og:title" content="TLT Nine Houses Quiz" />
+	<meta name="description" content="Discover your true house identity." />
+	<meta property="og:description" content="Discover your true house identity." />
+	<meta property="og:image" content="/shh-its-a-test-transparent-smaller.png" />
 	{#each Array(9) as _, i}
 		<link rel="preload" as="image" href={`/houses/${i + 1}.svg`} />
 	{/each}
