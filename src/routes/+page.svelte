@@ -1,4 +1,8 @@
 <script lang="ts">
+	import '../app.css';
+	import { suddenIn } from './bezier';
+	import { items, ordinalNumbers } from './data';
+
 	function stab(
 		_node: HTMLElement,
 		{
@@ -6,8 +10,9 @@
 			finalWidth,
 			finalPos,
 			posRelativeTo,
+			forwards,
 			delay = 0,
-			duration = 100
+			duration = 200
 		}: {
 			delta: number;
 			finalWidth: number;
@@ -15,21 +20,23 @@
 			posRelativeTo: 'left' | 'right';
 			delay?: number;
 			duration?: number;
+			forwards: boolean;
 		}
 	) {
 		return {
 			delay,
 			duration,
-			css: (t: number) => `
-				width: ${finalWidth + delta - t * delta}px;
-				${posRelativeTo}: ${finalPos - delta + t * delta}px;
-				opacity: ${t};
-			`
+			css: (t: number, u: number) => {
+				let w = suddenIn(forwards ? t : u);
+				if (!forwards) w = 1 - w;
+				return `
+					width: ${finalWidth + delta - w * delta}px;
+					${posRelativeTo}: ${finalPos - delta + w * delta}px;
+					opacity: ${t};
+				`;
+			}
 		};
 	}
-
-	import '../app.css';
-	import { items, ordinalNumbers } from './data';
 
 	let chosenItems: number[] = $state([]);
 	// let chosenItems: number[] = $state([0, 2]);
@@ -168,11 +175,19 @@
 								>
 									<img
 										alt=""
-										transition:stab={{
+										in:stab={{
 											delta: stabDelta,
 											finalWidth: 60,
 											finalPos: -50,
-											posRelativeTo: 'left'
+											posRelativeTo: 'left',
+											forwards: true
+										}}
+										out:stab={{
+											delta: stabDelta,
+											finalWidth: 60,
+											finalPos: -50,
+											posRelativeTo: 'left',
+											forwards: false
 										}}
 										src="/rapier.png"
 										style="filter: brightness(0.8) contrast(2);
@@ -181,11 +196,19 @@
 									/>
 									<img
 										alt=""
-										transition:stab={{
+										in:stab={{
 											delta: -stabDelta,
 											finalWidth: 40,
 											finalPos: -30,
-											posRelativeTo: 'right'
+											posRelativeTo: 'right',
+											forwards: true
+										}}
+										out:stab={{
+											delta: -stabDelta,
+											finalWidth: 40,
+											finalPos: -30,
+											posRelativeTo: 'right',
+											forwards: false
 										}}
 										src="/rapier.png"
 										style="filter: brightness(0.8) contrast(2);
@@ -322,6 +345,7 @@
 		animation: fade-in 1s ease-in;
 		animation-fill-mode: both;
 
+		// this doesn't really do anything anymore to be honest
 		@for $i from 1 through 10 {
 			&:nth-child(#{$i}) {
 				animation-delay: 150ms * $i;
