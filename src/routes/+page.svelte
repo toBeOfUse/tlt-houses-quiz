@@ -233,7 +233,7 @@
 							<div
 								style="display: flex; flex-direction: column; align-items: center;
 									border-radius: 5px; padding: 8px 12px"
-								style:box-shadow={houseResults.includes(houseIndex) ? '0px 0px 8px #fffa' : ''}
+								style:box-shadow={houseResults.includes(houseIndex) ? '0px 0px 8px 1px #fffd' : ''}
 							>
 								<img
 									alt={ordinalNumbers[houseIndex] + ' house'}
@@ -276,7 +276,7 @@
 								{@html items[itemIndex].description}
 							</div>
 							{#if i !== chosenItems.length - 1}<hr
-									style="margin: 12px 0; border-color: #fffa; border-width: 0.25px"
+									style="margin: 12px 0; border-color: #fff8; border-width: 0.25px"
 								/>{/if}
 						{/each}
 					</div>
