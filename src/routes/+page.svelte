@@ -114,7 +114,7 @@
 
 <section>
 	<div style="display: flex">
-		<div id="main-content">
+		<div id="main-content" style:background-color={choicesSubmitted ? 'transparent' : '#120112'}>
 			{#if !choicesSubmitted}
 				<div id="intro-text-container">
 					<div id="heading-container">
@@ -127,7 +127,7 @@
 							alt="A shitty clip-art skeleton says, 'Get your pencils. Shh. It's a test!'"
 						/>
 						<div>
-							<h1 style="text-align: center; margin-top: 32px; margin-bottom: 8px">
+							<h1 style="text-align: center; margin-top: 16px; margin-bottom: 8px">
 								Tamsyn Muir's SEABOUND
 							</h1>
 							<h4 style="text-align: center; margin-bottom: 24px">
@@ -338,11 +338,18 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 85ch;
-		margin: 0 auto;
+		width: 90ch;
 		max-width: 100%;
 		text-align: justify;
-		padding: 16px;
+		padding: 16px 32px;
+		border-radius: 15px;
+		margin: 10px auto 20px;
+		transition: background-color 100ms ease-in-out;
+		border: 2px solid #4c4c4c;
+		@media (max-width: $item-columns-breakpoint) {
+			margin: 0 auto;
+			border-radius: 0;
+		}
 	}
 
 	#main-content > * {
@@ -367,7 +374,7 @@
 
 	#heading-container {
 		display: flex;
-		justify-content: center;
+		justify-content: space-evenly;
 		align-items: center;
 		gap: 4px;
 		padding: 0 4px;
