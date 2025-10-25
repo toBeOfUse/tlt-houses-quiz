@@ -19,5 +19,5 @@ jobs:
       - run: |
           pnpm i
           pnpm build
-          golf create-deployment house-quiz.stuffedanimal.family
-          golf deploy-content house-quiz.stuffedanimal.family --auth github-oidc --files ./dist
+          golf create-deployment house-quiz.stuffedanimal.family --auth github-oidc
+          golf deploy-content house-quiz.stuffedanimal.family --auth github-oidc --files ./build
