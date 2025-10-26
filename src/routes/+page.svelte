@@ -114,7 +114,7 @@
 
 <section>
 	<div style="display: flex">
-		<div id="main-content" style:background-color={choicesSubmitted ? 'transparent' : '#120112'}>
+		<div id="main-content" style:background-color={choicesSubmitted ? 'transparent' : '#120105'}>
 			{#if !choicesSubmitted}
 				<div id="intro-text-container">
 					<div id="heading-container">
@@ -160,6 +160,7 @@
 							role="checkbox"
 							aria-checked={chosen}
 							disabled={chosenItems.length === 5 && !chosen}
+							style:background-color={chosen ? 'black' : '#0002'}
 							onclick={() => {
 								if (!chosen) {
 									if (chosenItems.length < 5) chosenItems.push(i);
@@ -338,7 +339,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 760px;
+		width: 820px;
 		max-width: 100%;
 		text-align: justify;
 		padding: 16px 32px;
@@ -428,7 +429,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: #000a;
 		border-radius: 8px;
 		text-align: center;
 		padding: 0 16px;
@@ -445,7 +445,7 @@
 	.flourish {
 		width: 400px;
 		max-width: 85vw;
-		filter: invert(100%);
+		filter: invert(100%) brightness(0.8);
 	}
 
 	#score-grid {
