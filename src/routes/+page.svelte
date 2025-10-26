@@ -112,9 +112,12 @@
 	<link rel="preload" as="image" href="/rapier.png" />
 </svelte:head>
 
-<section>
+<section style:background-color="var(--bg-color)">
 	<div style="display: flex">
-		<div id="main-content" style:background-color={choicesSubmitted ? 'transparent' : '#120105'}>
+		<div
+			id="main-content"
+			style:background-color={choicesSubmitted ? 'transparent' : 'var(--main-color)'}
+		>
 			{#if !choicesSubmitted}
 				<div id="intro-text-container">
 					<div id="heading-container">
@@ -160,7 +163,7 @@
 							role="checkbox"
 							aria-checked={chosen}
 							disabled={chosenItems.length === 5 && !chosen}
-							style:background-color={chosen ? 'black' : '#0002'}
+							style:background-color={chosen ? 'var(--selected-color)' : 'var(--button-color)'}
 							onclick={() => {
 								if (!chosen) {
 									if (chosenItems.length < 5) chosenItems.push(i);
@@ -225,7 +228,13 @@
 						</button>
 					{/each}
 				</div>
-				<button onclick={submitChoices} disabled={chosenItems.length < 5} class="submit-button"
+				<button
+					onclick={submitChoices}
+					disabled={chosenItems.length < 5}
+					class="submit-button"
+					style:background-color={chosenItems.length < 5
+						? 'var(--button-color)'
+						: 'var(--selected-color)'}
 					>{chosenItems.length === 5
 						? 'go out to sea'
 						: `(${chosenItems.length}/5 items selected)`}</button
@@ -310,6 +319,15 @@
 </section>
 
 <style lang="scss">
+	:global(:root) {
+		// color-picked from the nona the ninth cover
+		--bg-color: #111e31;
+		--main-color: #273244;
+		--button-color: #18222b;
+		--selected-color: black;
+		--accent-color: #885262;
+	}
+
 	@keyframes fade-in {
 		from {
 			opacity: 0;
@@ -346,7 +364,7 @@
 		border-radius: 15px;
 		margin: 10px auto 20px;
 		transition: background-color 100ms ease-in-out;
-		border: 2px solid #4c4c4c;
+		border: 2px solid var(--accent-color);
 		@media (max-width: $item-columns-breakpoint) {
 			margin: 0 auto;
 			border-radius: 0;
@@ -416,7 +434,6 @@
 		margin: 28px $room-for-swords;
 		font-size: 1.5em;
 		padding: 8px;
-		background-color: black;
 		box-shadow: 0px 0px 8px #fffa;
 		transition: box-shadow 100ms linear;
 		&:disabled {
