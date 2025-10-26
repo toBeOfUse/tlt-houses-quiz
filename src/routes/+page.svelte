@@ -301,7 +301,7 @@
 		</div>
 		<img
 			class="desktop-only"
-			style="height: 100vh; width: auto; top: 0; right: 0; aspect-ratio: 219 / 417; position: sticky"
+			style="height: 100vh; width: auto; top: 0; right: 0; aspect-ratio: 219 / 417; margin-left: 16px; position: sticky"
 			src="/shh-its-a-test-transparent.png"
 			alt="A shitty clip-art skeleton says, 'Get your pencils. Shh. It's a test!'"
 		/>
@@ -338,7 +338,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 90ch;
+		width: 760px;
 		max-width: 100%;
 		text-align: justify;
 		padding: 16px 32px;
