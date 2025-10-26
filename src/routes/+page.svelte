@@ -321,11 +321,11 @@
 <style lang="scss">
 	:global(:root) {
 		// color-picked from the nona the ninth cover
-		--bg-color: #111e31;
-		--main-color: #273244;
-		--button-color: #18222b;
-		--selected-color: black;
-		--accent-color: #885262;
+		--bg-color: #080e17;
+		--main-color: #151b24;
+		--button-color: #10151a;
+		--selected-color: #0b0f13;
+		--accent-color: #2d2833;
 	}
 
 	@keyframes fade-in {
