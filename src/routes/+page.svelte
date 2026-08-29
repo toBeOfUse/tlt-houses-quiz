@@ -136,7 +136,7 @@
 							<h1 style="text-align: center; margin-top: 16px; margin-bottom: 8px">
 								Tamsyn Muir's SEABOUND
 							</h1>
-							<h4 style="text-align: center; margin-bottom: 24px">
+							<h4 style="text-align: center; margin-bottom: 8px">
 								A Locked Tomb Universe Survival Adventure and House Identification Tool
 							</h4>
 						</div>
@@ -243,7 +243,7 @@
 						: `(${chosenItems.length}/5 items selected)`}</button
 				>
 			{:else}
-				<div style="margin-bottom: 5px; text-align: center">
+				<div style="text-align: center">
 					<h1 style="margin: 16px 0">Your Results:</h1>
 					<div id="score-grid">
 						{#each calculatedScore as score, houseIndex}
@@ -276,9 +276,9 @@
 					{/if}
 				</div>
 				<div style="text-align: left">
-					<h2>Guide to your items:</h2>
 					<div style="display: flex; flex-direction: column; gap: 4px">
 						{#each chosenItems as itemIndex, i}
+							<hr style="margin: 12px 0; border-color: #fff8; border-width: 0.25px" />
 							<div>
 								<h4 style="margin: 8px 0; font-size: 115%">{items[itemIndex].name}</h4>
 								{#each Object.entries(items[itemIndex].housePoints) as [house, points], pointsIndex}
@@ -292,9 +292,6 @@
 								{/each}
 								{@html items[itemIndex].description}
 							</div>
-							{#if i !== chosenItems.length - 1}<hr
-									style="margin: 12px 0; border-color: #fff8; border-width: 0.25px"
-								/>{/if}
 						{/each}
 					</div>
 				</div>
@@ -341,7 +338,7 @@
 		}
 	}
 
-	$desktop-breakpoint: 1150px;
+	$desktop-breakpoint: 1250px;
 	$item-columns-breakpoint: 650px;
 
 	@media (max-width: $desktop-breakpoint) {
@@ -371,6 +368,7 @@
 		@media (max-width: $item-columns-breakpoint) {
 			margin: 0 auto;
 			border-radius: 0;
+			padding: 16px;
 		}
 	}
 
